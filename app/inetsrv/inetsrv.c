@@ -116,7 +116,7 @@ static int discard_worker(void *socket) {
     return 0;
 }
 
-static int discard_server(void *arg) {
+static int discard_server(void *arg) {// @NOTE 
     status_t err;
     tcp_socket_t *listen_socket;
 
@@ -137,7 +137,7 @@ static int discard_server(void *arg) {
         }
 
         TRACEF("starting discard worker\n");
-        thread_detach_and_resume(thread_create("discard_worker", &discard_worker, accept_socket, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));
+        thread_detach_and_resume(thread_create("discard_worker", &discard_worker, accept_socket, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));// @NOTE 
     }
 }
 
@@ -203,12 +203,12 @@ static void inetsrv_entry(const struct app_descriptor *app, void *args) {
     printf("starting internet servers\n");
 
     thread_detach_and_resume(thread_create("chargen", &chargen_server, NULL, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));
-    thread_detach_and_resume(thread_create("discard", &discard_server, NULL, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));
+    thread_detach_and_resume(thread_create("discard", &discard_server, NULL, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));// @NOTE 
     thread_detach_and_resume(thread_create("echo", &echo_server, NULL, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));
     tftp_server_init(NULL);
 }
 
-APP_START(inetsrv)
+APP_START(inetsrv)// @NOTE 
 .init = inetsrv_init,
 .entry = inetsrv_entry,
 .flags = 0,

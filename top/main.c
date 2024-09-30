@@ -56,7 +56,7 @@ static void call_constructors(void) {
 }
 
 /* called from arch code */
-void lk_main(ulong arg0, ulong arg1, ulong arg2, ulong arg3) {
+void lk_main(ulong arg0, ulong arg1, ulong arg2, ulong arg3) {// @NOTE 
     // save the boot args
     lk_boot_args[0] = arg0;
     lk_boot_args[1] = arg1;
@@ -100,7 +100,7 @@ void lk_main(ulong arg0, ulong arg1, ulong arg2, ulong arg3) {
     kernel_init();
 
     lk_primary_cpu_init_level(LK_INIT_LEVEL_KERNEL, LK_INIT_LEVEL_THREADING - 1);
-
+//sched
     // create a thread to complete system initialization
     dprintf(SPEW, "creating bootstrap completion thread\n");
     thread_t *t = thread_create("bootstrap2", &bootstrap2, NULL, DEFAULT_PRIORITY, DEFAULT_STACK_SIZE);
@@ -111,8 +111,8 @@ void lk_main(ulong arg0, ulong arg1, ulong arg2, ulong arg3) {
     // become the idle thread and enable interrupts to start the scheduler
     thread_become_idle();
 }
-
-static int bootstrap2(void *arg) {
+// while
+static int bootstrap2(void *arg) {// @NOTE 
     dprintf(SPEW, "top of bootstrap2()\n");
 
     lk_primary_cpu_init_level(LK_INIT_LEVEL_THREADING, LK_INIT_LEVEL_ARCH - 1);

@@ -67,7 +67,7 @@ thread_t *_current_thread;
 static thread_t *_prev_running_thread = NULL;
 
 static void initial_thread_func(void) __NO_RETURN;
-static void initial_thread_func(void) {
+static void initial_thread_func(void) {// @NOTE 
     int ret;
 
     LTRACEF("thread %p calling %p with arg %p\n", _current_thread, _current_thread->entry, _current_thread->arg);
@@ -82,7 +82,7 @@ static void initial_thread_func(void) {
     thread_exit(ret);
 }
 
-void arch_thread_initialize(struct thread *t) {
+void arch_thread_initialize(struct thread *t) {// @NOTE 
     LTRACEF("thread %p, stack %p\n", t, t->stack);
 
     /* find the top of the stack and align it on an 8 byte boundary */
@@ -92,7 +92,7 @@ void arch_thread_initialize(struct thread *t) {
     frame--;
 
     /* arrange for pc to point to our starting routine */
-    frame->pc = (uint32_t)&initial_thread_func;
+    frame->pc = (uint32_t)&initial_thread_func;// @NOTE 
     /* set thumb mode bit */
     frame->psr = xPSR_T_Msk;
     /* set EXC_RETURN value to thread mode using MSP and no FP */

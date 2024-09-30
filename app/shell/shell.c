@@ -19,7 +19,7 @@ static void shell_entry(const struct app_descriptor *app, void *args) {
     // TODO: destroy console and free resources
 }
 
-APP_START(shell)
+APP_START(shell)// @NOTE 
 .entry = shell_entry,
 APP_END
 

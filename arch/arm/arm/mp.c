@@ -61,7 +61,7 @@ enum handler_return arm_ipi_generic_handler(void *arg) {
 }
 
 enum handler_return arm_ipi_reschedule_handler(void *arg);
-enum handler_return arm_ipi_reschedule_handler(void *arg) {
+enum handler_return arm_ipi_reschedule_handler(void *arg) {// @NOTE 
     LTRACEF("cpu %u, arg %p\n", arch_curr_cpu_num(), arg);
 
     return mp_mbx_reschedule_irq();

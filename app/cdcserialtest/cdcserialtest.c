@@ -41,7 +41,7 @@ static void cdctest_entry(const struct app_descriptor *app, void *args) {
     }
 }
 
-APP_START(usbtest)
+APP_START(usbtest)// @NOTE 
 .init = cdctest_init,
 .entry = cdctest_entry,
 APP_END

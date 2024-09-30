@@ -154,10 +154,10 @@ void arm_cm_irq_entry(void) {
     target_set_debug_led(1, true);
 }
 
-void arm_cm_irq_exit(bool reschedule) {
+void arm_cm_irq_exit(bool reschedule) {// @NOTE 
     target_set_debug_led(1, false);
 
-    if (reschedule)
+    if (reschedule)// @NOTE 
         thread_preempt();
 
     KEVLOG_IRQ_EXIT(__get_IPSR());

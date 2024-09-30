@@ -176,7 +176,7 @@ fail:
     return -1;
 }
 
-status_t lkboot_process_command(lkb_t *lkb) {
+status_t lkboot_process_command(lkb_t *lkb) {// @NOTE 
     msg_hdr_t hdr;
     char cmd[128];
     char *arg;
@@ -198,7 +198,7 @@ status_t lkboot_process_command(lkb_t *lkb) {
     if (!(arg = strchr(arg, ':'))) goto fail;
     arg++;
 
-    err = lkb_handle_command(lkb, cmd, arg, len, &result);
+    err = lkb_handle_command(lkb, cmd, arg, len, &result);// @NOTE 
     if (err >= 0) {
         lkb_okay(lkb);
     } else {
@@ -213,7 +213,7 @@ fail:
     return ERR_IO;
 }
 
-static status_t lkboot_server(lk_time_t timeout) {
+static status_t lkboot_server(lk_time_t timeout) {// @NOTE 
     lkboot_dcc_init();
 
 #if WITH_LIB_MINIP
@@ -242,7 +242,7 @@ static status_t lkboot_server(lk_time_t timeout) {
 
             /* handle the command and close it */
             lkb = lkboot_tcp_opened(s);
-            lkboot_process_command(lkb);
+            lkboot_process_command(lkb);// @NOTE 
             free(lkb);
             tcp_close(s);
             handled_command = true;
@@ -284,7 +284,7 @@ __WEAK bool platform_abort_autoboot(void) {
     return false;
 }
 
-static void lkboot_task(const struct app_descriptor *app, void *args) {
+static void lkboot_task(const struct app_descriptor *app, void *args) {// @NOTE 
     /* read a few sysparams to decide if we're going to autoboot */
     uint8_t autoboot = 1;
     sysparam_read("lkboot.autoboot", &autoboot, sizeof(autoboot));
@@ -309,7 +309,7 @@ static void lkboot_task(const struct app_descriptor *app, void *args) {
     TRACEF("autoboot %u autoboot_timeout %u\n", autoboot, (uint)autoboot_timeout);
 
 #if LKBOOT_WITH_SERVER
-    lkboot_server(autoboot_timeout);
+    lkboot_server(autoboot_timeout);// @NOTE 
 #else
     if (autoboot_timeout != INFINITE_TIME) {
         TRACEF("waiting for %u milliseconds before autobooting\n", (uint)autoboot_timeout);
@@ -330,8 +330,8 @@ static void lkboot_task(const struct app_descriptor *app, void *args) {
 
     TRACEF("nothing to do, exiting\n");
 }
-
-APP_START(lkboot)
-.entry = lkboot_task,
+//sche
+APP_START(lkboot)// @NOTE 
+.entry = lkboot_task,// @NOTE 
 .flags = 0,
 APP_END

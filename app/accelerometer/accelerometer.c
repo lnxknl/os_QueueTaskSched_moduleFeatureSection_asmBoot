@@ -27,7 +27,7 @@ void read_xyz(void) {
 
 }
 
-APP_START(accelerometer)
+APP_START(accelerometer)// @NOTE 
 .flags = 0,
 APP_END
 

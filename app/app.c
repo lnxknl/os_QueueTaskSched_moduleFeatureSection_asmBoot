@@ -19,7 +19,7 @@ extern const struct app_descriptor __stop_apps __WEAK;
 static void start_app(const struct app_descriptor *app, bool detach);
 
 /* one time setup */
-void apps_init(void) {
+void apps_init(void) {// @NOTE 
     const struct app_descriptor *app;
 
     /* call all the init routines */
@@ -31,7 +31,7 @@ void apps_init(void) {
     /* start any that want to start on boot */
     for (app = &__start_apps; app != &__stop_apps; app++) {
         if (app->entry && (app->flags & APP_FLAG_NO_AUTOSTART) == 0) {
-            start_app(app, true);
+            start_app(app, true);// @NOTE 
         }
     }
 }
@@ -44,7 +44,7 @@ static int app_thread_entry(void *arg) {
     return 0;
 }
 
-static void start_app(const struct app_descriptor *app, bool detach) {
+static void start_app(const struct app_descriptor *app, bool detach) {// @NOTE 
     /* dont start an app that has no entry point */
     if (app->entry == NULL) {
         return;
@@ -53,7 +53,7 @@ static void start_app(const struct app_descriptor *app, bool detach) {
     uint32_t stack_size = (app->flags & APP_FLAG_CUSTOM_STACK_SIZE) ? app->stack_size : DEFAULT_STACK_SIZE;
 
     printf("starting app %s\n", app->name);
-    thread_t *t = thread_create(app->name, &app_thread_entry, (void *)app, DEFAULT_PRIORITY, stack_size);
+    thread_t *t = thread_create(app->name, &app_thread_entry, (void *)app, DEFAULT_PRIORITY, stack_size);// @NOTE 
     if (detach) {
         thread_detach(t);
         thread_resume(t);

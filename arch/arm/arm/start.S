@@ -250,7 +250,7 @@ arm_reset:
     ldr     r6, =__data_end
 
     cmp     r4, r5
-    beq     .L__do_bss
+    beq     .L__do_bss// @NOTE 
 
 .L__copy_loop:
     cmp     r5, r6
@@ -268,8 +268,8 @@ arm_reset:
     strlt   r6, [r4], #4
     blt     .L__bss_loop
 
-    bl      lk_main
-    b       .
+    bl      lk_main // @# main func entry
+    b       .// @NOTE 
 
 #if WITH_KERNEL_VM
     /* per cpu mmu setup, shared between primary and secondary cpus

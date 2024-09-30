@@ -84,7 +84,7 @@ static int chainload_thread(void *arg) {
     for (;;);
 }
 
-static int do_boot(lkb_t *lkb, size_t len, const char **result) {
+static int do_boot(lkb_t *lkb, size_t len, const char **result) {// @NOTE 
     LTRACEF("lkb %p, len %zu, result %p\n", lkb, len, result);
 
     void *buf;
@@ -160,7 +160,7 @@ static int do_boot(lkb_t *lkb, size_t len, const char **result) {
     cl_args.args[2] = lk_args[2];
     cl_args.args[3] = lk_args[3];
 
-    thread_resume(thread_create("boot", &chainload_thread, &cl_args,
+    thread_resume(thread_create("boot", &chainload_thread, &cl_args,// @NOTE 
                                 DEFAULT_PRIORITY, DEFAULT_STACK_SIZE));
 
     return 0;
@@ -258,7 +258,7 @@ status_t do_flash_boot(void) {
 }
 
 // return NULL for success, error string for failure
-int lkb_handle_command(lkb_t *lkb, const char *cmd, const char *arg, size_t len, const char **result) {
+int lkb_handle_command(lkb_t *lkb, const char *cmd, const char *arg, size_t len, const char **result) {// @NOTE 
     *result = NULL;
 
     struct lkb_command *lcmd;
@@ -375,7 +375,7 @@ int lkb_handle_command(lkb_t *lkb, const char *cmd, const char *arg, size_t len,
         return -1;
 #endif
     } else if (!strcmp(cmd, "boot")) {
-        return do_boot(lkb, len, result);
+        return do_boot(lkb, len, result);// @NOTE 
     } else if (!strcmp(cmd, "getsysparam")) {
         const void *ptr;
         size_t len_local;

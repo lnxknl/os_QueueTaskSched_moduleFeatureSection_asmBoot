@@ -544,7 +544,7 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 #include <lib/page_alloc.h>
 #include <assert.h>
 #include <lk/debug.h>
-#define MMAP(s) mmap(s)
+#define MMAP(s) mmap(s)// @NOTE 
 #define DIRECT_MMAP(s) mmap(s)
 #define MUNMAP(b, s) munmap(b, s)
 #define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T /* disable direct mapping of chunks */
@@ -1773,7 +1773,7 @@ static FORCEINLINE int win32munmap(void* ptr, size_t size) {
     #define USE_MMAP_BIT            (SIZE_T_ONE)
 
     #ifdef MMAP
-        #define CALL_MMAP(s)        MMAP(s)
+        #define CALL_MMAP(s)        MMAP(s)// @NOTE 
     #else /* MMAP */
         #define CALL_MMAP(s)        MMAP_DEFAULT(s)
     #endif /* MMAP */
@@ -4195,7 +4195,7 @@ static void* sys_alloc(mstate m, size_t nb) {
   }
 
   if (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
-    char* mp = (char*)(CALL_MMAP(asize));
+    char* mp = (char*)(CALL_MMAP(asize));// @NOTE 
     if (mp != CMFAIL) {
       tbase = mp;
       tsize = asize;

@@ -48,7 +48,7 @@ static void moot_entry(const struct app_descriptor *app, void *args) {
     do_boot();
 }
 
-APP_START(moot)
+APP_START(moot)// @NOTE 
 .init = moot_init,
 .entry = moot_entry,
 APP_END

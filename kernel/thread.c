@@ -76,7 +76,7 @@ static timer_t preempt_timer[SMP_MAX_CPUS];
 #endif
 
 /* run queue manipulation */
-static void insert_in_run_queue_head(thread_t *t) {
+static void insert_in_run_queue_head(thread_t *t) {// @NOTE 
     DEBUG_ASSERT(t->magic == THREAD_MAGIC);
     DEBUG_ASSERT(t->state == THREAD_READY);
     DEBUG_ASSERT(!list_in_list(&t->queue_node));
@@ -98,7 +98,7 @@ static void insert_in_run_queue_tail(thread_t *t) {
     run_queue_bitmap |= (1<<t->priority);
 }
 
-static void wakeup_cpu_for_thread(thread_t *t)
+static void wakeup_cpu_for_thread(thread_t *t)// @NOTE 
 {
     /* Wake up the core to which this thread is pinned
      * or wake up all if thread is unpinned */
@@ -143,7 +143,7 @@ static void init_thread_struct(thread_t *t, const char *name) {
  *
  * @return  Pointer to thread object, or NULL on failure.
  */
-thread_t *thread_create_etc(thread_t *t, const char *name, thread_start_routine entry, void *arg, int priority, void *stack, size_t stack_size) {
+thread_t *thread_create_etc(thread_t *t, const char *name, thread_start_routine entry, void *arg, int priority, void *stack, size_t stack_size) {// @NOTE 
     unsigned int flags = 0;
 
     if (!t) {
@@ -164,7 +164,7 @@ thread_t *thread_create_etc(thread_t *t, const char *name, thread_start_routine 
     thread_set_curr_cpu(t, -1);
 
     t->retcode = 0;
-    wait_queue_init(&t->retcode_wait_queue);
+    wait_queue_init(&t->retcode_wait_queue);// @NOTE 
 
 #if WITH_KERNEL_VM
     t->aspace = NULL;
@@ -204,24 +204,24 @@ thread_t *thread_create_etc(thread_t *t, const char *name, thread_start_routine 
     t->flags = flags;
 
     /* inherit thread local storage from the parent */
-    thread_t *current_thread = get_current_thread();
+    thread_t *current_thread = get_current_thread();// @NOTE 
     int i;
     for (i=0; i < MAX_TLS_ENTRY; i++)
         t->tls[i] = current_thread->tls[i];
 
     /* set up the initial stack frame */
-    arch_thread_initialize(t);
+    arch_thread_initialize(t);// @NOTE 
 
     /* add it to the global thread list */
     THREAD_LOCK(state);
-    list_add_head(&thread_list, &t->thread_list_node);
+    list_add_head(&thread_list, &t->thread_list_node);// @NOTE 
     THREAD_UNLOCK(state);
 
     return t;
 }
 
 thread_t *thread_create(const char *name, thread_start_routine entry, void *arg, int priority, size_t stack_size) {
-    return thread_create_etc(NULL, name, entry, arg, priority, NULL, stack_size);
+    return thread_create_etc(NULL, name, entry, arg, priority, NULL, stack_size);// @NOTE // @NOTE 
 }
 
 /**
@@ -272,7 +272,7 @@ static bool thread_is_real_time_or_idle(thread_t *t) {
  *
  * @return NO_ERROR on success, ERR_NOT_SUSPENDED if thread was not suspended.
  */
-status_t thread_resume(thread_t *t) {
+status_t thread_resume(thread_t *t) {// @NOTE 
     DEBUG_ASSERT(t->magic == THREAD_MAGIC);
     DEBUG_ASSERT(t->state != THREAD_DEATH);
 
@@ -281,12 +281,12 @@ status_t thread_resume(thread_t *t) {
     THREAD_LOCK(state);
     if (t->state == THREAD_SUSPENDED) {
         t->state = THREAD_READY;
-        insert_in_run_queue_head(t);
+        insert_in_run_queue_head(t);// @NOTE 
         if (!ints_disabled) /* HACK, don't resced into bootstrap thread before idle thread is set up */
             resched = true;
     }
 
-    wakeup_cpu_for_thread(t);
+    wakeup_cpu_for_thread(t);// @NOTE 
 
     THREAD_UNLOCK(state);
 
@@ -296,12 +296,12 @@ status_t thread_resume(thread_t *t) {
     return NO_ERROR;
 }
 
-status_t thread_detach_and_resume(thread_t *t) {
+status_t thread_detach_and_resume(thread_t *t) {// @NOTE 
     status_t err;
     err = thread_detach(t);
     if (err < 0)
         return err;
-    return thread_resume(t);
+    return thread_resume(t);// @NOTE 
 }
 
 status_t thread_join(thread_t *t, int *retcode, lk_time_t timeout) {
@@ -334,7 +334,7 @@ status_t thread_join(thread_t *t, int *retcode, lk_time_t timeout) {
         *retcode = t->retcode;
 
     /* remove it from the master thread list */
-    list_delete(&t->thread_list_node);
+    list_delete(&t->thread_list_node);// @NOTE 
 
     /* clear the structure's magic */
     t->magic = 0;
@@ -379,7 +379,7 @@ status_t thread_detach(thread_t *t) {
  *
  * This function does not return.
  */
-void thread_exit(int retcode) {
+void thread_exit(int retcode) {// @NOTE 
     thread_t *current_thread = get_current_thread();
 
     DEBUG_ASSERT(current_thread->magic == THREAD_MAGIC);
@@ -397,7 +397,7 @@ void thread_exit(int retcode) {
     /* if we're detached, then do our teardown here */
     if (current_thread->flags & THREAD_FLAG_DETACHED) {
         /* remove it from the master thread list */
-        list_delete(&current_thread->thread_list_node);
+        list_delete(&current_thread->thread_list_node);// @NOTE 
 
         /* clear the structure's magic */
         current_thread->magic = 0;
@@ -428,7 +428,7 @@ static void idle_thread_routine(void) {
         arch_idle();
 }
 
-static thread_t *get_top_thread(int cpu) {
+static thread_t *get_top_thread(int cpu) {// @NOTE 
     thread_t *newthread;
     uint32_t local_run_queue_bitmap = run_queue_bitmap;
 
@@ -466,7 +466,7 @@ static thread_t *get_top_thread(int cpu) {
  * This is probably not the function you're looking for. See
  * thread_yield() instead.
  */
-void thread_resched(void) {
+void thread_resched(void) {// @NOTE 
     thread_t *oldthread;
     thread_t *newthread;
 
@@ -479,13 +479,13 @@ void thread_resched(void) {
 
     THREAD_STATS_INC(reschedules);
 
-    newthread = get_top_thread(cpu);
+    newthread = get_top_thread(cpu);// @NOTE 
 
     DEBUG_ASSERT(newthread);
 
     newthread->state = THREAD_RUNNING;
 
-    oldthread = current_thread;
+    oldthread = current_thread;// @NOTE 
 
     if (newthread == oldthread)
         return;
@@ -558,7 +558,7 @@ void thread_resched(void) {
     target_set_debug_led(0, !thread_is_idle(newthread));
 
     /* do the switch */
-    set_current_thread(newthread);
+    set_current_thread(newthread); // @#do switch
 
 #if DEBUG_THREAD_CONTEXT_SWITCH
     dprintf(ALWAYS, "arch_context_switch: cpu %d, old %p (%s, pri %d, flags 0x%x), new %p (%s, pri %d, flags 0x%x)\n",
@@ -596,7 +596,7 @@ void thread_resched(void) {
 #endif
 
     /* do the low level context switch */
-    arch_context_switch(oldthread, newthread);
+    arch_context_switch(oldthread, newthread);// @NOTE 
 }
 
 /**
@@ -644,7 +644,7 @@ void thread_yield(void) {
  * This function will return at some later time. Possibly immediately if
  * no other threads are waiting to execute.
  */
-void thread_preempt(void) {
+void thread_preempt(void) {// @NOTE 
     thread_t *current_thread = get_current_thread();
 
     DEBUG_ASSERT(current_thread->magic == THREAD_MAGIC);
@@ -660,14 +660,14 @@ void thread_preempt(void) {
     THREAD_LOCK(state);
 
     /* we are being preempted, so we get to go back into the front of the run queue if we have quantum left */
-    current_thread->state = THREAD_READY;
+    current_thread->state = THREAD_READY;// @NOTE 
     if (likely(!thread_is_idle(current_thread))) { /* idle thread doesn't go in the run queue */
         if (current_thread->remaining_quantum > 0)
             insert_in_run_queue_head(current_thread);
         else
             insert_in_run_queue_tail(current_thread); /* if we're out of quantum, go to the tail of the queue */
     }
-    thread_resched();
+    thread_resched();// @NOTE , main sched func
 
     THREAD_UNLOCK(state);
 }
@@ -772,7 +772,7 @@ void thread_sleep(lk_time_t delay) {
  *
  * This function is called once, from kmain()
  */
-void thread_init_early(void) {
+void thread_init_early(void) {// @NOTE 
     int i;
 
     DEBUG_ASSERT(arch_curr_cpu_num() == 0);
@@ -782,7 +782,7 @@ void thread_init_early(void) {
         list_initialize(&run_queue[i]);
 
     /* initialize the thread list */
-    list_initialize(&thread_list);
+    list_initialize(&thread_list);// @NOTE 
 
     /* create a thread to cover the current running state */
     thread_t *t = idle_thread(0);
@@ -880,7 +880,7 @@ void thread_become_idle(void) {
 
 /* create an idle thread for the cpu we're on, and start scheduling */
 
-void thread_secondary_cpu_init_early(void) {
+void thread_secondary_cpu_init_early(void) {// @NOTE 
     DEBUG_ASSERT(arch_ints_disabled());
 
     /* construct an idle thread to cover our cpu */
@@ -1016,7 +1016,7 @@ void dump_all_threads(void) {
 }
 
 #if THREAD_STATS
-void dump_threads_stats(void) {
+void dump_threads_stats(void) {// @NOTE 
     thread_t *t;
 
     THREAD_LOCK(state);

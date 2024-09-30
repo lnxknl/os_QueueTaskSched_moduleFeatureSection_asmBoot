@@ -28,7 +28,7 @@ struct context_switch_frame {
 extern void arm_context_switch(addr_t *old_sp, addr_t new_sp);
 
 static void initial_thread_func(void) __NO_RETURN;
-static void initial_thread_func(void) {
+static void initial_thread_func(void) {// @NOTE 
     int ret;
 
 //  dprintf("initial_thread_func: thread %p calling %p with arg %p\n", current_thread, current_thread->entry, current_thread->arg);

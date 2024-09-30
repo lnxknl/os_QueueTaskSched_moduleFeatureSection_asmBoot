@@ -43,7 +43,7 @@ static const struct __debugger_info__ {
     u8 off_waitq;
 } _debugger_info = {
     .version = 0x0200,
-    .thread_list_ptr = &thread_list,
+    .thread_list_ptr = &thread_list,// @NOTE 
     .current_thread_ptr = &_current_thread,
     .off_list_node = __builtin_offsetof(thread_t, thread_list_node),
     .off_state = __builtin_offsetof(thread_t, state),
